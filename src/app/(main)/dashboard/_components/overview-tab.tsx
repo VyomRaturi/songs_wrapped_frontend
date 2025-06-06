@@ -227,18 +227,7 @@ function SongsSubmissionChart() {
       </CardHeader>
       <CardContent className="h-full">
         <ResponsiveContainer width="100%" height="100%">
-          <ChartContainer
-            config={{
-              thisWeek: {
-                label: "This Week",
-                color: "#22d3ee",
-              },
-              lastWeek: {
-                label: "Last Week",
-                color: "#3b82f6",
-              },
-            }}
-          >
+          <ChartContainer config={{}}>
             <LineChart data={songsSubmission}>
               <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#a1a7bb" />
               <YAxis axisLine={false} tickLine={false} stroke="#a1a7bb" />

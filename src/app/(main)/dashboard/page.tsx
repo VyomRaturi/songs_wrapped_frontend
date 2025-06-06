@@ -2,6 +2,8 @@
 
 import { useDashboardState } from "@/hooks/use-dashboard-state";
 
+import { FanInsightsTab } from "./_components/fan-insights-tab";
+import { GlobalPulseTab } from "./_components/global-pulse-tab";
 import { OverviewTab } from "./_components/overview-tab";
 
 export default function DashboardPage() {
@@ -9,6 +11,12 @@ export default function DashboardPage() {
 
   if (selectedTabId === "overview") {
     return <OverviewTab />;
+  }
+  if (selectedTabId === "global-pulse") {
+    return <GlobalPulseTab />;
+  }
+  if (selectedTabId === "fan-insights") {
+    return <FanInsightsTab />;
   }
 
   // Placeholder for other tabs
