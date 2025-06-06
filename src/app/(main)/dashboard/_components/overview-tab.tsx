@@ -16,9 +16,9 @@ import {
   Tooltip,
 } from "recharts";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data
 const storySnapshot = [
@@ -97,26 +97,27 @@ function StorySnapshot() {
 
 function HikeCard() {
   return (
-    <Card className="bg-card flex h-fit flex-col items-center">
-      <Image
-        src="/next.svg"
-        width={100}
-        height={100}
-        alt="The Hike"
-        className="mb-2 h-24 w-24 rounded-lg object-cover"
-      />
+    <Card className="bg-card flex h-72 flex-col">
       <CardHeader className="items-center">
         <CardTitle className="text-lg font-semibold">{hike.title}</CardTitle>
         <CardDescription className="text-muted-foreground text-xs">{hike.week}</CardDescription>
       </CardHeader>
-      <CardContent className="text-muted-foreground text-center text-sm">{hike.description}</CardContent>
+      <CardContent className="flex items-center justify-center">
+        <Image
+          src="/sq.png"
+          width={100}
+          height={100}
+          alt="The Hike"
+          className="h-44 w-full rounded-lg object-contain"
+        />
+      </CardContent>
     </Card>
   );
 }
 
 function TopStoryLines() {
   return (
-    <Card className="bg-card col-span-2">
+    <Card className="bg-card col-span-2 h-72">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Top Story lines</CardTitle>
       </CardHeader>
@@ -133,7 +134,7 @@ function TopStoryLines() {
 
 function TopSongs() {
   return (
-    <Card className="bg-card">
+    <Card className="bg-card h-72">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Top 5 Songs</CardTitle>
       </CardHeader>
@@ -155,16 +156,22 @@ function TopSongs() {
 
 function MoodAveragesChart() {
   return (
-    <Card className="bg-card">
+    <Card className="bg-card h-96 pb-0">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Mood Averages</CardTitle>
       </CardHeader>
-      <CardContent className="h-48">
+      <CardContent className="h-72">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={moodAverages}>
-            <XAxis dataKey="mood" axisLine={false} tickLine={false} stroke="#a1a7bb" />
+          <BarChart accessibilityLayer data={moodAverages}>
+            <XAxis
+              dataKey="mood"
+              axisLine={false}
+              tickLine={false}
+              stroke="#a1a7bb"
+              tickFormatter={(value) => value.slice(0, 4) + "..."}
+            />
             <YAxis axisLine={false} tickLine={false} stroke="#a1a7bb" />
-            <Bar dataKey="value" fill="#22d3ee" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="value" fill="#9F9FF8" radius={5} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -174,31 +181,24 @@ function MoodAveragesChart() {
 
 function GenreBreakdownChart() {
   return (
-    <Card className="bg-card">
+    <Card className="bg-card h-full">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Genre Breakdown</CardTitle>
       </CardHeader>
-      <CardContent className="flex h-48 items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={genreBreakdown}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={40}
-              outerRadius={60}
-              fill="#22d3ee"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
-            >
-              {genreBreakdown.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-          </PieChart>
+      <CardContent className="flex h-full items-center justify-between">
+        <ResponsiveContainer width="80%" height="100%">
+          <ChartContainer config={{}} className="mx-auto aspect-square max-h-[250px]">
+            <PieChart>
+              <Pie data={genreBreakdown} dataKey="value" nameKey="name" innerRadius={60} fill="#22d3ee">
+                {genreBreakdown.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            </PieChart>
+          </ChartContainer>
         </ResponsiveContainer>
-        <ul className="text-muted-foreground absolute top-4 right-4 space-y-1 text-xs">
+        <ul className="text-muted-foreground w-72 space-y-3 space-x-6">
           {genreBreakdown.map((g) => (
             <li key={g.name} className="flex items-center gap-2">
               <span className="inline-block h-2 w-2 rounded-full" style={{ background: g.color }} />
@@ -213,32 +213,47 @@ function GenreBreakdownChart() {
 
 function SongsSubmissionChart() {
   return (
-    <Card className="bg-card col-span-2">
+    <Card className="bg-card">
       <CardHeader>
-        <Tabs defaultValue="this-week" className="w-full">
-          <TabsList>
-            <TabsTrigger value="this-week">This Week</TabsTrigger>
-            <TabsTrigger value="last-week">Last Week</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <CardTitle className="mt-2 text-base font-semibold">Songs submission</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold">Songs submission</CardTitle>
+          <Tabs defaultValue="this-week" className="w-auto">
+            <TabsList>
+              <TabsTrigger value="this-week">This Week</TabsTrigger>
+              <TabsTrigger value="last-week">Last Week</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
       </CardHeader>
-      <CardContent className="h-48">
+      <CardContent className="h-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={songsSubmission}>
-            <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#a1a7bb" />
-            <YAxis axisLine={false} tickLine={false} stroke="#a1a7bb" />
-            <Tooltip />
-            <Line type="monotone" dataKey="thisWeek" stroke="#22d3ee" strokeWidth={2} dot={false} />
-            <Line
-              type="monotone"
-              dataKey="lastWeek"
-              stroke="#3b82f6"
-              strokeWidth={2}
-              dot={false}
-              strokeDasharray="4 2"
-            />
-          </LineChart>
+          <ChartContainer
+            config={{
+              thisWeek: {
+                label: "This Week",
+                color: "#22d3ee",
+              },
+              lastWeek: {
+                label: "Last Week",
+                color: "#3b82f6",
+              },
+            }}
+          >
+            <LineChart data={songsSubmission}>
+              <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#a1a7bb" />
+              <YAxis axisLine={false} tickLine={false} stroke="#a1a7bb" />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <Line type="monotone" dataKey="thisWeek" stroke="#22d3ee" strokeWidth={2} dot={false} />
+              <Line
+                type="monotone"
+                dataKey="lastWeek"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                dot={false}
+                strokeDasharray="4 2"
+              />
+            </LineChart>
+          </ChartContainer>
         </ResponsiveContainer>
       </CardContent>
     </Card>
@@ -247,21 +262,31 @@ function SongsSubmissionChart() {
 
 export function OverviewTab() {
   return (
-    <div className="bg-background flex min-h-screen flex-col gap-6 p-6">
-      {/* Story Snapshot */}
+    <div className="bg-background flex flex-col gap-4 p-6">
       <StorySnapshot />
-      <div className="flex gap-6">
-        <HikeCard />
-        <div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <TopStoryLines />
-            <TopSongs />
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <MoodAveragesChart />
-            <GenreBreakdownChart />
-            <SongsSubmissionChart />
-          </div>
+      <div className="grid grid-cols-12 gap-4">
+        {/* First row */}
+        <div className="col-span-2">
+          <HikeCard />
+        </div>
+        <div className="col-span-3">
+          <TopSongs />
+        </div>
+        <div className="col-span-7">
+          <TopStoryLines />
+        </div>
+
+        {/* Second row */}
+        <div className="col-span-6">
+          <MoodAveragesChart />
+        </div>
+        <div className="col-span-6">
+          <GenreBreakdownChart />
+        </div>
+
+        {/* Third row */}
+        <div className="col-span-12">
+          <SongsSubmissionChart />
         </div>
       </div>
     </div>

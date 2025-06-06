@@ -77,9 +77,9 @@
 }
 
 .dark {
-  --background: #181a20;
+  --background: #0a0a0a;
   --foreground: #f5f6fa;
-  --card: #23262f;
+  --card: #141414;
   --card-foreground: #f5f6fa;
   --popover: #23262f;
   --popover-foreground: #f5f6fa;
@@ -100,11 +100,11 @@
   --chart-3: #a78bfa;
   --chart-4: #f472b6;
   --chart-5: #facc15;
-  --sidebar: #1a1c23;
+  --sidebar: #0a0a0a;
   --sidebar-foreground: #f5f6fa;
   --sidebar-primary: #22d3ee;
   --sidebar-primary-foreground: #181a20;
-  --sidebar-accent: #3b82f6;
+  --sidebar-accent: #9F9FF8;
   --sidebar-accent-foreground: #f5f6fa;
   --sidebar-border: #23262f;
   --sidebar-ring: #22d3ee;
