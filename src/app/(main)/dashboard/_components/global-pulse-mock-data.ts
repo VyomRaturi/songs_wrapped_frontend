@@ -83,3 +83,79 @@ export const topGlobalSongsSeason: GlobalSong[] = [
   { name: "Hip Hop", value: 18, color: "#a78bfa" },
   { name: "Country", value: 12, color: "#f472b6" },
 ];
+
+// Add artist trends mock data for each region
+export type ArtistTrend = {
+  region: string;
+  artists: { name: string; value: number }[];
+};
+
+export const regionalArtistTrends: ArtistTrend[] = [
+  {
+    region: "Europe",
+    artists: [
+      { name: "Taylor Swift", value: 18 },
+      { name: "Harry Styles", value: 15 },
+      { name: "Charlie Puth", value: 12 },
+    ],
+  },
+  {
+    region: "North America",
+    artists: [
+      { name: "Drake", value: 20 },
+      { name: "Billie Eilish", value: 14 },
+      { name: "The Weeknd", value: 10 },
+    ],
+  },
+  {
+    region: "South America",
+    artists: [
+      { name: "Bad Bunny", value: 25 },
+      { name: "J Balvin", value: 18 },
+      { name: "Anitta", value: 15 },
+    ],
+  },
+];
+
+// Add most submitted songs by region for the new pie chart/table
+export type SubmittedSong = { title: string; artist: string; value: number; color: string };
+export type SubmittedSongsByRegion = { region: string; songs: SubmittedSong[] }[];
+
+export const mostSubmittedSongsByRegion: SubmittedSongsByRegion = [
+  {
+    region: "Europe",
+    songs: [
+      { title: "Tell me why", artist: "Taylor Swift", value: 500, color: "#22d3ee" },
+      { title: "As it was", artist: "Harry Styles", value: 454, color: "#3b82f6" },
+      { title: "Love story", artist: "Taylor Swift", value: 567, color: "#a78bfa" },
+      { title: "Looser", artist: "Charlie Puth", value: 375, color: "#f472b6" },
+    ],
+  },
+  {
+    region: "USA",
+    songs: [
+      { title: "As it was", artist: "Harry Styles", value: 454, color: "#22d3ee" },
+      { title: "Tell me why", artist: "Taylor Swift", value: 400, color: "#3b82f6" },
+      { title: "Love story", artist: "Taylor Swift", value: 350, color: "#a78bfa" },
+      { title: "Looser", artist: "Charlie Puth", value: 300, color: "#f472b6" },
+    ],
+  },
+  {
+    region: "India",
+    songs: [
+      { title: "Love story", artist: "Taylor Swift", value: 567, color: "#22d3ee" },
+      { title: "As it was", artist: "Harry Styles", value: 300, color: "#3b82f6" },
+      { title: "Tell me why", artist: "Taylor Swift", value: 200, color: "#a78bfa" },
+      { title: "Looser", artist: "Charlie Puth", value: 150, color: "#f472b6" },
+    ],
+  },
+  {
+    region: "Jakarta",
+    songs: [
+      { title: "Looser", artist: "Charlie Puth", value: 375, color: "#22d3ee" },
+      { title: "Love story", artist: "Taylor Swift", value: 200, color: "#3b82f6" },
+      { title: "Tell me why", artist: "Taylor Swift", value: 150, color: "#a78bfa" },
+      { title: "As it was", artist: "Harry Styles", value: 100, color: "#f472b6" },
+    ],
+  },
+];

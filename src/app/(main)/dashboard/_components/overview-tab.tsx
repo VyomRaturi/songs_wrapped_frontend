@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import { ChevronDown } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -43,12 +44,13 @@ const topStoryLines = [
   "From basecamp to peak, fans curated the perfect playlist for elevation. The Weeknd's emotional highs matched every breathtaking overlook.",
 ];
 
-const topSongs = [
-  { title: "As it was", artist: "Harry styles" },
-  { title: "Tell me why", artist: "Taylor swift" },
-  { title: "Love story", artist: "Taylor swift" },
-  { title: "Looser", artist: "Charlie puth" },
-  { title: "Attention", artist: "Charlie puth" },
+const topLikedSongs = [
+  { title: "As it was", artist: "Harry styles", likes: 454, fan: "@erob1231", platform: "Tiktok" },
+  { title: "Tell me why", artist: "Taylor swift", likes: 500, fan: "@AP dhillon", platform: "Instagram" },
+  { title: "Love story", artist: "Taylor swift", likes: 547, fan: "@Red boy", platform: "YT Shorts" },
+  { title: "Looser", artist: "Charlie puth", likes: 432, fan: "@user2", platform: "Spotify" },
+  { title: "Attention", artist: "Charlie puth", likes: 399, fan: "@user3", platform: "Apple Music" },
+  // Add more if needed for scroll
 ];
 
 const moodAverages = [
@@ -132,35 +134,58 @@ function TopStoryLines() {
   );
 }
 
-function TopSongs() {
+function TopLikedSongs() {
   return (
-    <Card className="bg-card h-72">
+    <Card className="bg-card relative flex h-80 flex-col overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-base font-semibold">Top 5 Songs</CardTitle>
+        <CardTitle className="text-base font-semibold">Top Liked Songs</CardTitle>
+        <CardDescription className="text-muted-foreground text-xs">
+          Fans and Artists That Got The Most Likes
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ol className="text-muted-foreground space-y-1 text-sm">
-          {topSongs.map((song, i) => (
-            <li key={i} className="flex items-center justify-between">
-              <span>
-                {i + 1}. {song.title}
-              </span>
-              <span className="text-muted-foreground text-xs">{song.artist}</span>
-            </li>
-          ))}
-        </ol>
+      <CardContent className="flex-1 overflow-y-auto px-0 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-700">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="border-muted border-b">
+              <th className="px-4 py-2 text-left font-medium">Songs</th>
+              <th className="px-4 py-2 text-left font-medium">Artists</th>
+              <th className="px-4 py-2 text-left font-medium">Likes</th>
+              <th className="px-4 py-2 text-left font-medium">Fans</th>
+              <th className="px-4 py-2 text-left font-medium">Platform</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topLikedSongs.map((song, i) => (
+              <tr key={i} className="border-muted border-b last:border-0">
+                <td className="px-4 py-2 font-semibold whitespace-nowrap">
+                  <span className="font-bold">
+                    {i + 1}. {song.title}
+                  </span>
+                </td>
+                <td className="px-4 py-2 whitespace-nowrap">{song.artist}</td>
+                <td className="px-4 py-2 whitespace-nowrap">{song.likes}</td>
+                <td className="px-4 py-2 whitespace-nowrap">{song.fan}</td>
+                <td className="px-4 py-2 whitespace-nowrap">{song.platform}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </CardContent>
+      {/* Bottom shadow and chevron for scroll indicator */}
+      <div className="from-background pointer-events-none absolute bottom-0 left-0 flex h-10 w-full items-end justify-center bg-gradient-to-t to-transparent">
+        <ChevronDown className="text-muted-foreground mb-1" size={28} />
+      </div>
     </Card>
   );
 }
 
 function MoodAveragesChart() {
   return (
-    <Card className="bg-card h-96 pb-0">
+    <Card className="bg-card h-72 pb-0">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Mood Averages</CardTitle>
       </CardHeader>
-      <CardContent className="h-72">
+      <CardContent className="h-48">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart accessibilityLayer data={moodAverages}>
             <XAxis
@@ -169,6 +194,7 @@ function MoodAveragesChart() {
               tickLine={false}
               stroke="#a1a7bb"
               tickFormatter={(value) => value.slice(0, 4) + "..."}
+              className="text-xs"
             />
             <YAxis axisLine={false} tickLine={false} stroke="#a1a7bb" />
             <Bar dataKey="value" fill="#9F9FF8" radius={5} />
@@ -181,31 +207,40 @@ function MoodAveragesChart() {
 
 function GenreBreakdownChart() {
   return (
-    <Card className="bg-card h-full">
+    <Card className="bg-card h-80">
       <CardHeader>
-        <CardTitle className="text-base font-semibold">Genre Breakdown</CardTitle>
+        <div className="flex flex-col">
+          <CardTitle className="text-base font-semibold">Genre Breakdown</CardTitle>
+          <ul className="mt-2 mb-4 flex flex-row flex-wrap gap-6">
+            {genreBreakdown.map((g) => (
+              <li key={g.name} className="flex items-center gap-2">
+                <span className="inline-block h-2 w-2 rounded-full" style={{ background: g.color }} />
+                <span className="text-xs font-medium">{g.name}</span>
+                <span className="text-muted-foreground text-xs">{g.value}%</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </CardHeader>
-      <CardContent className="flex h-full items-center justify-between">
-        <ResponsiveContainer width="80%" height="100%">
-          <ChartContainer config={{}} className="mx-auto aspect-square max-h-[250px]">
-            <PieChart>
-              <Pie data={genreBreakdown} dataKey="value" nameKey="name" innerRadius={60} fill="#22d3ee">
-                {genreBreakdown.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            </PieChart>
-          </ChartContainer>
-        </ResponsiveContainer>
-        <ul className="text-muted-foreground w-72 space-y-3 space-x-6">
-          {genreBreakdown.map((g) => (
-            <li key={g.name} className="flex items-center gap-2">
-              <span className="inline-block h-2 w-2 rounded-full" style={{ background: g.color }} />
-              {g.name} {g.value}%
-            </li>
-          ))}
-        </ul>
+      <CardContent>
+        <div className="mt-[-50px] flex items-center">
+          <ResponsiveContainer width="100%" height={250}>
+            <ChartContainer config={{}} className="aspect-square max-h-[250px]">
+              <PieChart>
+                <Pie data={genreBreakdown} dataKey="value" nameKey="name" innerRadius={60} fill="#22d3ee">
+                  {genreBreakdown.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              </PieChart>
+            </ChartContainer>
+          </ResponsiveContainer>
+          <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+            <div className="text-muted-foreground text-7xl font-bold">245</div>
+            <div className="text-sm">Total number of submissions</div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
@@ -252,31 +287,33 @@ function SongsSubmissionChart() {
 export function OverviewTab() {
   return (
     <div className="bg-background flex flex-col gap-4 p-6">
-      <StorySnapshot />
-      <div className="grid grid-cols-12 gap-4">
-        {/* First row */}
-        <div className="col-span-2">
+      {/* Top row: StorySnapshot */}
+      <div className="grid grid-cols-5 gap-4">
+        <div className="col-span-5">
+          <StorySnapshot />
+        </div>
+        <div className="col-span-1 flex h-full flex-col">
           <HikeCard />
         </div>
-        <div className="col-span-3">
-          <TopSongs />
-        </div>
-        <div className="col-span-7">
+        <div className="col-span-2">
           <TopStoryLines />
         </div>
-
-        {/* Second row */}
-        <div className="col-span-6">
+        <div className="col-span-2 flex h-full flex-col">
           <MoodAveragesChart />
         </div>
-        <div className="col-span-6">
+      </div>
+      {/* Middle row: Genre Breakdown & Top Liked Songs */}
+      <div className="grid grid-cols-7 gap-4">
+        <div className="col-span-3">
           <GenreBreakdownChart />
         </div>
-
-        {/* Third row */}
-        <div className="col-span-12">
-          <SongsSubmissionChart />
+        <div className="col-span-4">
+          <TopLikedSongs />
         </div>
+      </div>
+      {/* Bottom row: Songs Submission Chart */}
+      <div className="">
+        <SongsSubmissionChart />
       </div>
     </div>
   );

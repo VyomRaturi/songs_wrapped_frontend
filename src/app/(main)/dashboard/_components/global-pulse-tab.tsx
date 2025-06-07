@@ -18,6 +18,7 @@ import {
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import {
@@ -25,8 +26,8 @@ import {
   topSongsByContinent,
   regionalTrends,
   topCountriesBySubmission,
-  topGlobalSongsThisWeek,
-  topGlobalSongsSeason,
+  regionalArtistTrends,
+  mostSubmittedSongsByRegion,
 } from "./global-pulse-mock-data";
 
 function HikeCard() {
@@ -73,49 +74,74 @@ function HeatMapPlaceholder() {
   );
 }
 
-function TopSongsByContinent() {
+function MostLikedSongForEachRegion() {
+  // Use topSongsByContinent mock data for now
   return (
     <Card className="bg-card h-72">
       <CardHeader>
-        <CardTitle className="text-base font-semibold">Top Songs By Continent</CardTitle>
+        <CardTitle className="text-base font-semibold">Most Liked Song For Each Region</CardTitle>
       </CardHeader>
-      <CardContent>
-        {topSongsByContinent.map((c) => (
-          <div key={c.continent}>
-            <div className="mb-1 text-sm font-semibold">{c.continent}</div>
-            <ol className="text-muted-foreground space-y-1 text-sm">
-              {c.songs.map((song, i) => (
-                <li key={song.title} className="flex items-center justify-between">
-                  <span>
+      <CardContent className="h-full overflow-auto px-0">
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="text-muted-foreground border-muted border-b">
+              <th className="py-1 pl-6 font-medium">Songs</th>
+              <th className="py-1 font-medium">Artists</th>
+              <th className="py-1 font-medium">Likes</th>
+              <th className="py-1 font-medium">Region</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topSongsByContinent.flatMap((c) =>
+              c.songs.map((song, i) => (
+                <tr key={song.title + c.continent} className="border-muted border-b last:border-0">
+                  <td className="py-1 pl-6 font-semibold">
                     {i + 1}. {song.title}
-                  </span>
-                  <span className="text-muted-foreground text-xs">
-                    {song.artist} ({song.submissions})
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))}
+                  </td>
+                  <td className="py-1">{song.artist}</td>
+                  <td className="py-1">{song.submissions}</td>
+                  <td className="py-1">{c.continent}</td>
+                </tr>
+              )),
+            )}
+          </tbody>
+        </table>
       </CardContent>
     </Card>
   );
 }
 
 function RegionalTrends() {
-  // Use the regionalTrends mock data
+  const [mode, setMode] = useState<"genres" | "artists">("genres");
+  const data = mode === "genres" ? regionalTrends : regionalArtistTrends;
+  function getItems(region: (typeof data)[number]) {
+    if ("genres" in region) return region.genres;
+    if ("artists" in region) return region.artists;
+    return [];
+  }
   return (
     <Card className="bg-card h-72">
       <CardHeader>
-        <CardTitle className="text-base font-semibold">Regional Trends</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold">Regional Trends</CardTitle>
+          <Select value={mode} onValueChange={(v) => setMode(v as "genres" | "artists")}>
+            <SelectTrigger className="h-8 w-28 text-xs">
+              <SelectValue>{mode === "genres" ? "Genres" : "Artists"}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="genres">Genres</SelectItem>
+              <SelectItem value="artists">Artists</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent className="flex h-56 items-center">
-        <div className="flex h-full w-full justify-between gap-8">
-          {regionalTrends.map((region) => (
+        <div className="mt-[-20px] flex h-full w-full justify-between gap-8">
+          {data.map((region) => (
             <div key={region.region} className="min-w-0 flex-1">
               <div className="mb-2 text-base font-semibold text-white">{region.region}</div>
               <div className="flex flex-col gap-3">
-                {region.genres.map((g) => (
+                {getItems(region).map((g: { name: string; value: number }) => (
                   <div key={g.name} className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-white">{g.name}</span>
@@ -157,56 +183,57 @@ function TopCountriesBySubmission() {
   );
 }
 
-function TopGlobalSongs() {
+function MoodSubmissionByRegion() {
+  // Example genres/colors, you can adjust as needed
+  const genres = [
+    { label: "High energy", color: "#9F9FF8" },
+    { label: "High valance", color: "#A7F8C1" },
+    { label: "Low danceability", color: "#7DD3FC" },
+  ];
+  const [region, setRegion] = useState("Europe");
+  // Use the pie chart data from mostSubmittedSongsByRegion or similar mock data
+  const regionData = mostSubmittedSongsByRegion.find((r) => r.region === region) ?? mostSubmittedSongsByRegion[0];
   return (
     <Card className="bg-card flex h-72 flex-col">
-      <CardHeader className="flex-row items-center justify-between pt-4 pb-2">
-        <CardTitle className="text-base font-semibold">Top global songs</CardTitle>
-        <div className="flex items-center gap-3 text-xs">
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#22d3ee" }} />
-            Pop
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#3b82f6" }} />
-            Rock
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#a78bfa" }} />
-            Hip Hop
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#f472b6" }} />
-            Country
-          </span>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold">Mood Submission By Region</CardTitle>
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger className="ml-2 h-8 w-28 text-xs">
+              <SelectValue>{region}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {mostSubmittedSongsByRegion.map((r) => (
+                <SelectItem key={r.region} value={r.region}>
+                  {r.region}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="mt-2 flex gap-2">
+          {genres.map((g) => (
+            <div key={g.label} className="flex items-center gap-2 text-xs">
+              <span className="inline-block h-2 w-2 rounded-full" style={{ background: g.color }} />
+              <span className="text-muted-foreground">{g.label}</span>
+            </div>
+          ))}
         </div>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-row items-center justify-evenly">
-        <div className="flex flex-col items-center">
-          <ResponsiveContainer width={120} height={120}>
+
+      <div className="flex flex-row items-center gap-4 px-6">
+        <div className="flex flex-1 justify-center">
+          <ResponsiveContainer width={140} height={140}>
             <PieChart>
-              <Pie data={topGlobalSongsThisWeek} dataKey="value" nameKey="name" innerRadius={40} outerRadius={60}>
-                {topGlobalSongsThisWeek.map((entry, index) => (
-                  <Cell key={`cell-thisweek-${index}`} fill={entry.color} />
+              <Pie data={regionData.songs} dataKey="value" nameKey="title" innerRadius={45} outerRadius={65}>
+                {regionData.songs.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <span className="text-muted-foreground mt-2 text-xs">This Week</span>
         </div>
-        <div className="flex flex-col items-center">
-          <ResponsiveContainer width={120} height={120}>
-            <PieChart>
-              <Pie data={topGlobalSongsSeason} dataKey="value" nameKey="name" innerRadius={40} outerRadius={60}>
-                {topGlobalSongsSeason.map((entry, index) => (
-                  <Cell key={`cell-season-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          <span className="text-muted-foreground mt-2 text-xs">Season To Date</span>
-        </div>
-      </CardContent>
+      </div>
     </Card>
   );
 }
@@ -215,30 +242,26 @@ export function GlobalPulseTab() {
   return (
     <div className="bg-background flex flex-col gap-4 p-6">
       <div className="grid grid-cols-12 gap-4">
-        {/* Top row: HikeCard and HeatMap */}
+        {/* First row: Hike Card and Heat Map Placeholder */}
         <div className="col-span-2">
           <HikeCard />
         </div>
-        <div className="col-span-7">
+        <div className="col-span-10">
           <HeatMapPlaceholder />
         </div>
-        {/* Empty for spacing/alignment */}
-        <div className="col-span-3" />
-
-        {/* Second row: Top Songs By Continent and Regional Trends */}
+        {/* Second row: Mood Submission and Regional Trends */}
         <div className="col-span-4">
-          <TopSongsByContinent />
+          <MoodSubmissionByRegion />
         </div>
         <div className="col-span-8">
           <RegionalTrends />
         </div>
-
-        {/* Third row: Top Countries by Submission and Top Global Songs */}
-        <div className="col-span-7">
+        {/* Third row: Top Countries by Submission and Most Liked Song For Each Region */}
+        <div className="col-span-5">
           <TopCountriesBySubmission />
         </div>
-        <div className="col-span-5">
-          <TopGlobalSongs />
+        <div className="col-span-7">
+          <MostLikedSongForEachRegion />
         </div>
       </div>
     </div>
