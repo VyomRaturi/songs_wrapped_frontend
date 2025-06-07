@@ -3,19 +3,7 @@
 import Image from "next/image";
 
 import { ChevronDown } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Pie,
-  PieChart,
-  Cell,
-  Line,
-  LineChart,
-  Tooltip,
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Pie, PieChart, Cell, Line, LineChart } from "recharts";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";

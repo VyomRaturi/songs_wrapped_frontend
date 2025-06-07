@@ -5,7 +5,6 @@ import { useState } from "react";
 import Image from "next/image";
 
 import { ChevronDown } from "lucide-react";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell } from "recharts";
 
 // UI components
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
